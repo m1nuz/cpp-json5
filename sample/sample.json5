@@ -1,0 +1,35 @@
+{
+  witharray: [
+    {
+      name: 'Joe',
+      age: 27,
+    },
+    {
+      name: 'Jane',
+      age: 32,
+    },
+  ],
+  withNestedArray: [
+    [
+      1,
+      true,
+      'three',
+    ],
+    [
+      4,
+      'five',
+      6,
+    ],
+  ],
+  withNumbers: {
+    integer: 123,
+    withFractionPart: 123.456,
+    onlyFractionPart: 0.456,
+    withExponent: 0,
+    positiveHex: 912559,
+    negativeHex: -12648430,
+    positiveInfinity: Infinity,
+    negativeInfinity: -Infinity,
+    notANumber: NaN,
+  },
+}
