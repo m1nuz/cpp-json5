@@ -9,8 +9,8 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -183,35 +183,35 @@ public:
             if (std::holds_alternative<boolean_type>(_value)) {
                 return static_cast<T>(std::get<boolean_type>(_value));
             } else {
-                return default_value;
+                return std::move(default_value);
             }
         } else if constexpr (std::is_integral_v<T>) {
             if (std::holds_alternative<int_type>(_value)) {
                 return static_cast<T>(std::get<int_type>(_value));
             } else {
-                return default_value;
+                return std::move(default_value);
             }
         } else if constexpr (std::is_floating_point_v<T>) {
             if (std::holds_alternative<number_type>(_value)) {
                 return static_cast<T>(std::get<number_type>(_value));
             } else {
-                return default_value;
+                return std::move(default_value);
             }
         } else if constexpr (std::is_same_v<T, string_type>) {
             if (std::holds_alternative<string_type>(_value)) {
                 return std::get<string_type>(_value);
             } else {
-                return default_value;
+                return std::move(default_value);
             }
         } else if constexpr (std::is_same_v<T, string_view_type>) {
             if (std::holds_alternative<string_type>(_value)) {
                 return std::get<string_type>(_value);
             } else {
-                return default_value;
+                return std::move(default_value);
             }
         }
 
-        return default_value;
+        return std::move(default_value);
     }
 
     /// element access
@@ -414,9 +414,9 @@ public:
             }
             char* end;
             if (is_float_point) {
-                value = strtod(start, &end);
+                value = static_cast<number_type>(strtod(start, &end));
             } else {
-                value = strtol(start, &end, base);
+                value = static_cast<int_type>(strtoll(start, &end, base));
             }
         }
     }
