@@ -33,26 +33,83 @@ target_compile_features(${LIB_NAME}
 if (CPP_JSON5_BUILD_TEST)
     include(CTest)
     include(Catch2)
-
+    
     enable_testing()
 
-    add_executable(json5tests test/test.cpp)
+    set(TESTS_NAME json5tests)
 
-    target_compile_features(json5tests
+    add_executable(${TESTS_NAME} test/test.cpp)
+
+    if (UNIX AND NOT APPLE)
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            target_compile_options(${TESTS_NAME}
+                PUBLIC
+                    -pedantic
+                    -Wall
+                    -Wextra
+                    -Werror
+                    -Wshadow
+                    -stdlib=libc++
+            )
+            set(PLATFORM_LIBRARIES
+                -lc++
+                -lc++abi
+                -lm
+            )
+        else()
+            target_compile_options(${TESTS_NAME}
+                PUBLIC
+                    -pedantic
+                    -Wall
+                    -Wextra
+                    -Werror
+                    -Wshadow
+            )
+            set(PLATFORM_LIBRARIES
+                stdc++
+                stdc++fs
+            )
+        endif()
+        
+    elseif (APPLE)
+        target_compile_options(${TESTS_NAME}
+            PUBLIC
+                -pedantic
+                -Wall
+                -Wextra
+                -Werror
+                -Wshadow
+        )
+        
+        set(PLATFORM_LIBRARIES
+            -stdlib=libc++
+            -lc++abi
+        )
+    elseif (MSVC)
+        target_compile_options(${TESTS_NAME}
+            PUBLIC
+                /W3
+                /WX
+        )
+    endif()
+
+    target_compile_features(${TESTS_NAME}
         PUBLIC
             cxx_std_17
     )
 
-    target_include_directories(json5tests
+    target_include_directories(${TESTS_NAME}
         PUBLIC
             ${Catch2_INCLUDE_DIR}
     )
 
-    target_link_libraries(json5tests
+    target_link_libraries(${TESTS_NAME}
         PUBLIC
-            Catch2
+            Catch2::Catch2
             cpp-json5::cpp-json5
-    ) 
+            ${PLATFORM_LIBRARIES}
+    )
+    catch_discover_tests(${TESTS_NAME})
 endif()
 
 #
@@ -64,18 +121,36 @@ if (CPP_JSON5_BUILD_SAMPLE)
     add_executable(${SAMPLE_NAME} sample/main.cpp)
 
     if (UNIX AND NOT APPLE)
-        target_compile_options(${SAMPLE_NAME}
-            PUBLIC
-                -pedantic
-                -Wall
-                -Wextra
-                -Werror
-                -Wshadow       
-        )
-        set(PLATFORM_LIBRARIES
-            stdc++
-            stdc++fs
-        )
+        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            target_compile_options(${SAMPLE_NAME}
+                PUBLIC
+                    -pedantic
+                    -Wall
+                    -Wextra
+                    -Werror
+                    -Wshadow
+                    -stdlib=libc++
+            )
+            set(PLATFORM_LIBRARIES
+                -lc++
+                -lc++abi
+                -lm
+            )
+        else()
+            target_compile_options(${SAMPLE_NAME}
+                PUBLIC
+                    -pedantic
+                    -Wall
+                    -Wextra
+                    -Werror
+                    -Wshadow
+            )
+            set(PLATFORM_LIBRARIES
+                stdc++
+                stdc++fs
+            )
+        endif()
+        
     elseif (APPLE)
         target_compile_options(${SAMPLE_NAME}
             PUBLIC

@@ -86,7 +86,6 @@ TEST_CASE("JSON5_Default") {
     }
     SECTION("Default c_str value") {
         json5::value j;
-        REQUIRE(j.value_or("qwerty") == "qwerty");
         REQUIRE(j.value_or("qwerty") == std::string { "qwerty" });
         REQUIRE(j.value_or("qwerty") == std::string_view { "qwerty" });
     }
@@ -358,7 +357,6 @@ TEST_CASE("JSON5_ParseArray") {
     }
 
     SECTION("at int array out of range") {
-        int arr[3] = { 1, 2, 3 };
         auto j = json5::value::parse("[1, 2, 3]");
         REQUIRE(j.is_array());
         REQUIRE(j.size() == 3);

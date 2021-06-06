@@ -12,14 +12,53 @@ env:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              os: ubuntu-latest,
+              cc: "gcc",
+              cxx: "g++"
+            }
+          - {
+              os: ubuntu-latest,
+              cc: "clang",
+              cxx: "clang++"
+            }
+          - {
+              os: windows-latest,
+              cc: "cl",
+              cxx: "cl"
+            }
+          - {
+              os: macos-latest,
+              cc: "clang",
+              cxx: "clang++"
+            }
+
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Update GCC (Linux)
+      if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.config.cc == 'gcc' }}
+      run: |
+        sudo apt-get install -y g++-10
+        echo "CC=gcc-10" >> $GITHUB_ENV
+        echo "CXX=g++-10" >> $GITHUB_ENV
+    
+    - name: Update Clang (Linux)
+      if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.config.cc == 'clang' }}
+      run: |
+        sudo apt-get install -y clang-11 libc++-11-dev libc++abi-11-dev
+        echo "CC=clang-11" >> $GITHUB_ENV
+        echo "CXX=clang-11" >> $GITHUB_ENV
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

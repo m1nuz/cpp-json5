@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <optional>
 
 #include <json5/json5.hpp>
 
