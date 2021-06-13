@@ -22,6 +22,10 @@
 
 #pragma once
 
+#if (!((__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L) && (_MSC_VER >= 1913))))
+#error "This compiler is not support C++17"
+#endif
+
 #include <cstdint>
 #include <cstring>
 #include <limits>
@@ -305,8 +309,27 @@ public:
     /// parser
     static auto skip_spaces_and_comments(const char** p) {
         do {
-            if (!isspace(**p)) {
+            const bool single_line_comment = **p == '/' && *((*p) + 1) == '/';
+            const bool multi_line_comment = **p == '/' && *((*p) + 1) == '*';
+            if (!isspace(**p) && !single_line_comment && !multi_line_comment) {
                 break;
+            } else if (single_line_comment) {
+                if (auto* e = strchr(*p, '\n'); e) {
+                    (*p) += e - (*p);
+                }
+            } else if (multi_line_comment) {
+                do {
+                    (*p) += 2;
+                    if (auto* e = strchr(*p, '*'); e) {
+                        if (*(e + 1) == '/') {
+                            (*p) += e - (*p) + 1;
+                            break;
+                        } else {
+                            (*p) += e - (*p);
+                        }
+                    }
+
+                } while (**p);
             }
 
             (*p)++;

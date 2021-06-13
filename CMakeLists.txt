@@ -170,6 +170,7 @@ if (CPP_JSON5_BUILD_SAMPLE)
             PUBLIC
                 /W3
                 /WX
+                /Zc:__cplusplus
         )
     endif()
 
