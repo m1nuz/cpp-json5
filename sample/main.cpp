@@ -27,7 +27,7 @@ int main(int, char**) {
     if (auto contents = read_contents<std::string>("../sample/sample.json5"); contents) {
         auto j = json5::value::parse(*contents);
         if (j.is_object() && j.size() == 3 && j["witharray"].is_array() && j["witharray"][0]["name"].get<std::string_view>() == "Joe"
-            && j["withNestedArray"][1][0].get<int>() == 4) {
+            && j["withNestedArray"][1][0].get<int>() == 4 && j["withNumbers"]["integer"].get<int>() == 123) {
             std::cout << "Success" << std::endl;
         }
         return 0;

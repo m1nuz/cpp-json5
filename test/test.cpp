@@ -5,9 +5,36 @@
 #include <json5/json5.hpp>
 
 TEST_CASE("JSON5_Parser_spaces") {
-    const char* s = "  asd";
-    json5::value::skip_spaces_and_comments(&s);
-    REQUIRE(*s == 'a');
+    SECTION("Skip spaces") {
+        const char* s = "  asd";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
+    SECTION("Skip single line comment") {
+        const char* s = "//zxc\na";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
+    SECTION("Skip single line comment and spaces") {
+        const char* s = "//zxc\n  a";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
+    SECTION("Skip multi line comment") {
+        const char* s = "/*qwe\nasd\nzxc*/a";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
+    SECTION("Skip multi line comment with *") {
+        const char* s = "/*qwe\nas*d\nzxc*/a";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
+    SECTION("Skip multi line comment and spaces") {
+        const char* s = "/*qwe\nasd\nzxc*/  a";
+        json5::value::skip_spaces_and_comments(&s);
+        REQUIRE(*s == 'a');
+    }
 }
 
 TEST_CASE("JSON5_Parser_string") {

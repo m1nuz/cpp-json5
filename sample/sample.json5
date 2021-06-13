@@ -1,4 +1,5 @@
 {
+  // Array
   witharray: [
     {
       name: 'Joe',
@@ -9,6 +10,7 @@
       age: 32,
     },
   ],
+  // Nested array
   withNestedArray: [
     [
       1,
@@ -21,6 +23,8 @@
       6,
     ],
   ],
+  /* Multi line
+   * comments */
   withNumbers: {
     integer: 123,
     withFractionPart: 123.456,
